@@ -1,1 +1,91 @@
-123456
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios@0.12.0/dist/axios.min.js"></script>
+    <style>
+        ul,ol{
+            list-style: none;
+            padding: 0;
+        }
+        .search{
+            width: 600px;
+            height: 50px;
+            border: 1px solid #FF5601;
+            border-radius: 40px;
+            display: flex;
+            align-items: center;
+            margin: 0 auto;
+        }
+        input{
+            border: none;
+            outline: none;
+            font-size: 20px;
+            margin-left: 20px;
+        }
+        span{
+            display: block;
+            padding: 0 20px;
+            border-right: 1px solid gainsboro;
+            line-height: 50px;
+        }
+        .list{
+            background-color: gainsboro;
+            width: 600px;
+            margin: 0 auto;
+            font-size: 14px ;
+
+        }
+        .list li{
+            line-height: 24px;
+            color: gray;
+        }
+    </style>
+  </head>
+  <body>
+
+    <div id="app">
+        <div class="search">
+            <span>宝贝</span>
+                <input type="text" v-model="value" placeholder='search'/>
+        </div>
+        <ul class="list">
+            <li v-for="item in suggests">{{item[0]}}</li>
+          </ul>
+    </div>
+    <script>
+      var app = new Vue({
+        el: "#app",
+        data: {
+          value: "",
+          suggests: [],
+        },
+        methods: {
+          getSuggests: function (keyword) {
+            axios
+              .get(
+                "http://api.kele8.cn/agent/https://suggest.taobao.com/sug?code=utf-8&q=" +
+                  keyword
+              )
+              .then((response) => {
+                console.log(this, response.data.result);
+                this.suggests = response.data.result;
+              })
+              .catch(function (error) {
+                console.log(error);
+              });
+          },
+        },
+        watch: {
+          value: function (n) {
+            this.getSuggests(n);
+          },
+        },
+      });
+    </script>
+  </body>
+</html>
